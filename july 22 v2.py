@@ -162,17 +162,22 @@ print matrixForAllBands
 
 import numpy
 atomicLookUp = numpy.array([ ['atomic number','element abr','kev low','kev hi'],
-[5,'B',0.125,0.242],
-[6,'C',0.218,0.337],
-[7,'N',0.332,0.452],
+#overlap
+[5,'B',0.125,0.242], #overlap: 0.218 to 0.242 
+[6,'C',0.218,0.337], #overlap: 0.218 to 0.242 , 0.332 to 0.337
+[7,'N',0.332,0.452], #overlap: 0.332 to 0.337, 
+
+#no overlap
 [8,'O',0.464,0.587],
 [9,'F',0.615,0.739],
 [11,'Na',0.976,1.106],
 [12,'Mg',1.188,1.32],
 [13,'Al',1.419,1.554],
 [14,'Si',1.671,1.809],
-[39,'Y',1.852,1.993],
-[15,'P',1.943,2.085],
+
+#overlap
+[39,'Y',1.852,1.993], #overlap: 1.943 to 1.993
+[15,'P',1.943,2.085], #overlap: 1.943 to 1.993, 
 [40,'Zr',1.971,2.114],
 [41,'Nb',2.094,2.238],
 [42,'Mo',2.221,2.366],
@@ -187,6 +192,8 @@ atomicLookUp = numpy.array([ ['atomic number','element abr','kev low','kev hi'],
 [49,'In',3.209,3.365],
 [19,'K',3.235,3.392],
 [50,'Sn',3.365,3.523],
+
+#gap in overlap
 [51,'Sb',3.525,3.685],
 [20,'Ca',3.611,3.772],
 [52,'Te',3.688,3.851],
@@ -207,15 +214,20 @@ atomicLookUp = numpy.array([ ['atomic number','element abr','kev low','kev hi'],
 [29,'Cu',7.946,8.15],
 [73,'Ta',8.044,8.248],
 [74,'W',8.295,8.501],
+#
 [30,'Zn',8.535,8.743],
 [75,'Re',8.548,8.757],
+#
 [76,'Os',8.807,9.017],
 [77,'Ir',9.069,9.282],
 [31,'Ga',9.145,9.359],
 [78,'Pt',9.335,9.55],
+#
 [79,'Au',9.605,9.822],
 [32,'Ge',9.777,9.996],
 [80,'Hg',9.879,10.099],
+
+#elements beyond 10keV
 [81,'Tl',10.158,10.38],
 [33,'As',10.432,10.656],
 [82,'Pb',10.44,10.664],
@@ -406,6 +418,29 @@ for x in range(512):
 print 'List of Elements for the 512 Bands'
 print labels512 
 
+# <codecell>
+
+elementBMatrix = [0]
+bBands =[7,8,9,10,11,12]
+
+elementCMatrix = [0]
+cBands =[13,14,15,16,17]
+
+elementNMatrix = [0]
+nBands =[18,19,20,21,22,23]
+
+elementOMatrix = [0]
+oBands =[24,25,26,27,28,29,30]
+
+elementFMatrix = [0]
+fBands =[32,33,34,35,36,37]
+
+elementNaMatrix = [0]
+naBands =[32,33,34,35,36,37]
+
+elementFeMatrix = [0]
+feBands =[324,325,326,327,328,329,330,331,332]
+
 # <headingcell level=3>
 
 # Find out the index number for the element
@@ -541,5 +576,267 @@ print elementFeMatrix
 
 #fig = plt.figure()
 # generate your plot
-#fig.savefig(fileNameAndExt,dpi=600)
+#fig.savefig('/home/jon/Documents/githubipython/elementCMatrixV10.png',dpi=600)
+
+# <headingcell level=3>
+
+# Clustering (k-values)
+
+# <rawcell>
+
+# #this site has some ideas about clustering an image
+# #http://iabhimanyu.wordpress.com/2012/07/10/k-mean-image-clustering-in-python/
+
+# <codecell>
+
+import time
+import Image
+import os
+import math
+
+# <codecell>
+
+CLUSTER_MEAN=[]
+NEW_CLUSTER_MEAN=[]
+CLUSTER_NO=[]
+SN=1
+
+# <codecell>
+
+def CLUS(color,K):
+    i=1
+    dist=math.sqrt( (CLUSTER_MEAN[0][0]-color[0])**2 + (CLUSTER_MEAN[0][1]-color[1])**2 + (CLUSTER_MEAN[0][2]-color[2])**2 )
+    clus_num=0
+    while i < K:
+        temp = math.sqrt( (CLUSTER_MEAN[i][0]-color[0])**2 + (CLUSTER_MEAN[i][1]-color[1])**2 + (CLUSTER_MEAN[i][2]-color[2])**2 )
+        if temp < dist :
+            dist=temp
+            clus_num=i
+        i=i+1
+    return clus_num
+
+# <codecell>
+
+def NEW_MEAN(s,K,im_arr):
+    count=[]
+    color_value=[]
+    i=0
+    while i < K:
+        count.append(0)
+        color_value.append([0,0,0])
+        i+=1
+    for item in CLUSTER_NO :
+        count[item[2]]+=1
+        color_value[item[2]][0]+=im_arr[item[0],item[1]][0]
+        color_value[item[2]][1]+=im_arr[item[0],item[1]][1]
+        color_value[item[2]][2]+=im_arr[item[0],item[1]][2]
+    i=0
+    while i < K:
+        value=[0,0,0]
+        if count[i]==0:
+            value[0]=color_value[i][0]
+            value[1]=color_value[i][1]
+            value[2]=color_value[i][2]
+        else:
+            value[0]=color_value[i][0]/count[i]
+            value[1]=color_value[i][1]/count[i]
+            value[2]=color_value[i][2]/count[i]
+        NEW_CLUSTER_MEAN.append(value)
+        i+=1
+    i=0
+    while i < K:
+        print "new mean of cluster ",i," = ",NEW_CLUSTER_MEAN[i]
+        i+=1
+    return
+
+# <codecell>
+
+def swap(K) :
+    templist=[]
+    i=0
+    while i< K:
+            templist.append(CLUSTER_MEAN[i])
+            i+=1
+    i=0
+    while i< K:
+            CLUSTER_MEAN[i]=NEW_CLUSTER_MEAN[i]
+            i+=1
+    return
+
+# <codecell>
+
+def MEAN_MOVE(K):
+    return math.sqrt( (CLUSTER_MEAN[K][0]-NEW_CLUSTER_MEAN[K][0])**2+ (CLUSTER_MEAN[K][1]-NEW_CLUSTER_MEAN[K][1])**2+ (CLUSTER_MEAN[K][2]-NEW_CLUSTER_MEAN[K][2])**2 )
+ 
+
+# <codecell>
+
+myInput = elementBMatrix
+path=os.getcwd()
+dirList=os.listdir(myInput)
+for infile in dirList:
+    s_time=time.time()
+    im=Image.open(myInput)
+    k=input(4)
+    f, e = os.path.splitext(myInput)
+    ARR=im.load()
+    S=im.size
+    i=0
+    while i< k:
+        print "enter the mean of cluster  rgb tuple",i
+        value=[0,0,0]
+        value[0]=input()
+        value[1]=input()
+        value[2]=input()
+        i=i+1
+        CLUSTER_MEAN.append(value)
+    while 1:
+        x=0
+        y=0
+        #finding the initial cluster classification of every pixel
+        while x < S[0]:
+            y=0
+            while y < S[1]:
+                cluster_tuple=[0,0,0]#stores the x,y coordinate and the cluster number of each pixel
+                cluster_tuple[0]=x
+                cluster_tuple[1]=y
+                cluster_tuple[2]=CLUS(ARR[x,y],k)
+                CLUSTER_NO.append(cluster_tuple)
+                y=y+1
+            x=x+1
+        #finding new cluster means
+        NEW_MEAN(S,k,ARR)
+        flag=0
+        i=0
+        while i < k:
+            temp=MEAN_MOVE(i)
+            if temp!=0:
+                flag=1
+            i+=1
+        swap(k)
+        if flag==0:
+            break
+        NEW_CLUSTER_MEAN[:]=[]
+        CLUSTER_NO[:]=[]
+ 
+    im2=Image.new("RGB",S,"#FFFFFF")
+    ARR2=im2.load()
+    color_arr=[]
+    i=0
+    print "enter k colors\n"
+    while i < k:
+        c=[0,0,0]
+        c[0]=input(" R value of %d color "%i)
+        c[1]=input(" G value of %d color "%i)
+        c[2]=input(" B value of %d color "%i)
+        color_arr.append(c)
+        i+=1
+    for i in range(len(CLUSTER_NO)):
+        v=(color_arr[CLUSTER_NO[i][2]][0],color_arr[CLUSTER_NO[i][2]][1],color_arr[CLUSTER_NO[i][2]][2])
+        im2.putpixel( ( CLUSTER_NO[i][0],CLUSTER_NO[i][1] ), v)
+ 
+    im2.save(path+"/OUTPUT/"+f+"."+e,"JPEG",quality=100)
+    NEW_CLUSTER_MEAN[:]=[]
+    CLUSTER_NO[:]=[]
+    CLUSTER_MEAN[:]=[]
+    print '%2d %6s' % (SN, f+e)
+    SN+=1
+
+# <rawcell>
+
+# From:
+# http://glowingpython.blogspot.com/2012/04/k-means-clustering-with-scipy.html
+
+# <codecell>
+
+from pylab import plot,show
+from numpy import vstack,array
+from numpy.random import rand
+from scipy.cluster.vq import kmeans,vq
+
+# data generation
+data = vstack((rand(150,2) + array([.5,.5]),rand(150,2)))
+
+# computing K-Means with K = 2 (2 clusters)
+centroids,_ = kmeans(data,2)
+# assign each sample to a cluster
+idx,_ = vq(data,centroids)
+
+# some plotting using numpy's logical indexing
+plot(data[idx==0,0],data[idx==0,1],'ob',
+     data[idx==1,0],data[idx==1,1],'or')
+plot(centroids[:,0],centroids[:,1],'sg',markersize=8)
+show()
+
+# <rawcell>
+
+# Now with three groups
+
+# <codecell>
+
+# now with K = 3 (3 clusters)
+centroids,_ = kmeans(data,3)
+idx,_ = vq(data,centroids)
+
+plot(data[idx==0,0],data[idx==0,1],'ob',
+     data[idx==1,0],data[idx==1,1],'or',
+     data[idx==2,0],data[idx==2,1],'og') # third cluster points
+plot(centroids[:,0],centroids[:,1],'sm',markersize=8)
+show()
+
+# <headingcell level=4>
+
+# Now try and do it with the image
+
+# <codecell>
+
+from pylab import plot,show
+from numpy import vstack,array
+from numpy.random import rand
+from scipy.cluster.vq import kmeans,vq
+
+# data generation
+data = elementBMatrix
+
+centroids,_ = kmeans(data,3)
+idx,_ = vq(data,centroids)
+
+plot(data[idx==0,0],data[idx==0,1],'ob',
+     data[idx==1,0],data[idx==1,1],'or',
+     data[idx==2,0],data[idx==2,1],'og') # third cluster points
+plot(centroids[:,0],centroids[:,1],'sm',markersize=8)
+
+show()
+
+# <headingcell level=4>
+
+# something about whiten()
+
+# <codecell>
+
+#from scipy.cluster.vq import *
+
+#data = elementBMatrix
+#data = whiten(data)
+#show()
+
+# <headingcell level=3>
+
+# principal compenent analysis
+
+# <rawcell>
+
+# http://code.google.com/p/pypca/wiki/Tutorial
+#     
+# import PCA
+# pca = PCA.PCA(k = 3,extern = True) # perform a 3-dimensional PCA
+# pca.fit(X) # learn the projection using X
+# proj = pca.transform(Y) # Apply projection to Y
+# 
+# pca = PCA.PCA(k = 4,kernel = True) # perform a 4 dimensional kernel PCA.
+# pca.fit(Kxx) # learn the projection using Kx
+# proj = pca.transform(Kyx,whiten = True) # Project with whitening
+
+# <codecell>
+
 
