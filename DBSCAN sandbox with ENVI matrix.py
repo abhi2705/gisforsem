@@ -580,6 +580,51 @@ show()
 
 # <headingcell level=1>
 
+# CONVERT rich quantities to categories
+
+# <codecell>
+
+print elementNaMatrix
+
+# <codecell>
+
+matrixColCounter = 0
+matrixRowCounter = 0
+
+elementNaMatrixCategory = numpy.matrix([0])
+
+for row in elementNaMatrix:
+    matrixRowCounter += 1
+    for col in row:
+        if col>= 0 and col <=10:
+            col = 0
+        elif col>= 11 and col <=20:
+            col = 1
+        elif col>= 21 and col <=30:
+            col = 2
+        elif col>= 31 and col <=40:
+            col = 3
+        elif col>= 41 and col <=50:
+            col = 4
+        elif col>= 51 and col <=60:
+            col = 5
+        elif col>= 61 and col <=70:
+            col = 6
+        elif col>= 71 and col <=100:
+            col = 7
+        elif col>= 101 and col <=150:
+            col = 8
+        elif col>= 151 and col <=200:
+            col = 9
+        elif col>= 200 and col <=300:
+            col = 10
+    #elementNaMatrixCategory[matrixRowCounter,matrixColCounter] = col
+    matrixColCounter += 1
+            
+print elementNaMatrix
+
+# <headingcell level=1>
+
 # EXPORT NUMPY ARRAY as RASTER
 
 # <rawcell>
