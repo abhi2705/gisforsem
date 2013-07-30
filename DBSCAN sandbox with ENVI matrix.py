@@ -531,36 +531,44 @@ for x in naBands:
 
 from pylab import pcolor, show, colorbar, xticks, yticks, savefig, title, xlabel, ylabel
 
+saveFolder = '/home/jon/Documents/githubipython/images/'
+
 pcolor(elementBMatrix)
 colorbar()
 title("Element B")
 xlabel("Width")
 ylabel("Height")
+savefig(saveFolder+'elementBMatrix'+'.png')
 show()
 
 pcolor(elementCMatrix)
 colorbar()
 title("Element C")
+savefig(saveFolder+'elementBMatrix'+'.png')
 show()
 
 pcolor(elementNMatrix)
 colorbar()
 title("Element N")
+savefig(saveFolder+'elementBMatrix'+'.png')
 show()
 
 pcolor(elementOMatrix)
 colorbar()
 title("Element O")
+savefig(saveFolder+'elementBMatrix'+'.png')
 show()
 
 pcolor(elementFMatrix)
 colorbar()
 title("Element F")
+savefig(saveFolder+'elementBMatrix'+'.png')
 show()
 
 pcolor(elementNaMatrix)
 colorbar()
 title("Element Na")
+savefig(saveFolder+'elementBMatrix'+'.png')
 show()
 
 #pcolor(elementMgMatrix)
@@ -668,7 +676,6 @@ pcolor(elementNaMatrixCategoryZero)
 title("Element Na Category Zero")
 
 #save the graph, has to be saved before the show()
-from pylab import savefig
 savefig("/home/jon/myplot.png")
 
 #show the graph as a pop up
