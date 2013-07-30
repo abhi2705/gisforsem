@@ -591,37 +591,462 @@ print elementNaMatrix
 matrixColCounter = 0
 matrixRowCounter = 0
 
-elementNaMatrixCategory = numpy.matrix([0])
+elementNaMatrixCategory = numpy.random.random((201,201))
 
-for row in elementNaMatrix:
-    matrixRowCounter += 1
-    for col in row:
-        if col>= 0 and col <=10:
-            col = 0
-        elif col>= 11 and col <=20:
-            col = 1
-        elif col>= 21 and col <=30:
-            col = 2
-        elif col>= 31 and col <=40:
-            col = 3
-        elif col>= 41 and col <=50:
-            col = 4
-        elif col>= 51 and col <=60:
-            col = 5
-        elif col>= 61 and col <=70:
-            col = 6
-        elif col>= 71 and col <=100:
-            col = 7
-        elif col>= 101 and col <=150:
-            col = 8
-        elif col>= 151 and col <=200:
-            col = 9
-        elif col>= 200 and col <=300:
-            col = 10
-    #elementNaMatrixCategory[matrixRowCounter,matrixColCounter] = col
-    matrixColCounter += 1
+rowOne = elementNaMatrix[0,:]
+rowTwo = elementNaMatrix[1:]
+
+numberOfRows = range(0,2)
+
+for rowNumber in numberOfRows:
+    matrixColCounter = 0
+    rowImOn = elementNaMatrix[rowNumber,:]
+    for col in rowImOn:
+        print 'this is col index',matrixColCounter
+        print 'this is rowNumber',rowNumber
+        matrixColCounter += 1
+
+# <codecell>
+
+rangeV1 = range(1,10)
+print rangeV1
+
+rangeV2 = range(1,10)*2
+print rangeV2
+
+start = 1
+stop = 10
+rangeV3 = range(start,stop)
+print rangeV3
+
+rangeV4 = range(start*2,stop*2)
+print rangeV4
+
+scalar = 2
+rangeV5 = range(start*scalar,stop*scalar)
+print rangeV5
+
+increment = 5
+rangeV6 = range((start+increment)*scalar,(stop+increment)*scalar)
+print rangeV6
+
+rangeV7 = range((start+increment),(stop+increment))
+print rangeV7
+
+rangeV8 = range((start+increment*scalar),(stop+increment*scalar))
+print rangeV8
+
+low = 0
+high = 4
+increment = 5
+scalarList = (0,1,2,3,4,5)
+for scalar in scalarList:
+    print 'scalar',low+scalar*increment,high+scalar*increment
+
+# <codecell>
+
+low = 0
+high = 10
+intervalWidth = high+1
+scalarList = range(0,27)
+for scalar in scalarList:
+    print 'scalar',low+scalar*intervalWidth,high+scalar*intervalWidth
+    rangeSet = range(low+scalar*intervalWidth+1,high+scalar*intervalWidth+1)
+    print 'range test set',rangeSet
+
+# <rawcell>
+
+# Pull out bands by category range
+
+# <codecell>
+
+matrixColCounter = 0
+matrixRowCounter = 0
+
+elementNaMatrixCategory = numpy.random.random((200,200))
+
+numberOfRows = range(0,200)
+#rowOne = elementNaMatrix[0,:]
+#rowTwo = elementNaMatrix[1,:]
+
+for rowNumber in numberOfRows:
+    matrixColCounter = 0
+    rowImOn = elementNaMatrix[rowNumber,:]
+    for col in rowImOn: 
+        low = 0
+        high = 10
+        intervalWidth = high+1
+        scalarList = range(0,27)
+        for scalar in scalarList:
+            rangeSet = range(low+scalar*intervalWidth+1,high+scalar*intervalWidth+1)
+            if col in rangeSet:
+                col = scalar
+                elementNaMatrixCategory[rowNumber,matrixColCounter] = col
+        matrixColCounter += 1
             
 print elementNaMatrix
+print ""
+print ""
+print elementNaMatrixCategory
+
+pcolor(elementNaMatrixCategory)
+colorbar()
+title("Element Na Category")
+show()
+
+print ""
+print ""
+print matrixColCounter
+print matrixRowCounter
+
+# <headingcell level=3>
+
+# pull out a layer with only one value
+
+# <rawcell>
+
+# Zero Layer
+
+# <codecell>
+
+matrixColCounter = 0
+matrixRowCounter = 0
+
+elementNaMatrixCategoryZero = numpy.random.random((200,200))
+
+matrixCounter = 0
+naMatrixZeroCordArray = [0]*50000
+
+numberOfRows = range(0,200)
+rowImOn = 0
+
+for rowNumber in numberOfRows:
+    matrixColCounter = 0
+    rowImOn = elementNaMatrixCategory[rowNumber,:]
+    for col in rowImOn: 
+        if col == 0:
+            elementNaMatrixCategoryZero[rowNumber,matrixColCounter] = 100
+            arrayIndexNumber = matrixColCounter+rowNumber*200
+            naMatrixZeroCordArray[arrayIndexNumber] = (matrixColCounter,rowNumber)
+        else:
+            elementNaMatrixCategoryZero[rowNumber,matrixColCounter] = 0
+        matrixColCounter += 1
+        matrixCounter += 1
+        #print matrixCounter
+
+print elementNaMatrixCategoryZero
+
+pcolor(elementNaMatrixCategoryZero)
+title("Element Na Category Zero")
+show()
+
+print naMatrixZeroCordArray[1]
+print naMatrixZeroCordArray[190:250]
+print ''
+print ''
+print ''
+naMatrixZeroCordArray[:] = (value for value in naMatrixZeroCordArray if value != 0)
+print naMatrixZeroCordArray
+
+# <headingcell level=2>
+
+# Cluster of new Array of Cordinates
+
+# <rawcell>
+
+# http://stackoverflow.com/questions/1157106/remove-all-occurences-of-a-value-from-a-python-list
+# 
+# http://glowingpython.blogspot.com/2012/04/k-means-clustering-with-scipy.html
+
+# <codecell>
+
+#import in libraries
+from pylab import plot,show
+from numpy import vstack,array
+from numpy.random import rand
+from scipy.cluster.vq import kmeans,vq
+
+# data generation
+data = vstack(naMatrixZeroCordArray)
+
+# now with K = 3 (3 clusters)
+centroids,_ = kmeans(data,3)
+idx,_ = vq(data,centroids)
+
+#make plot
+plot(data[idx==0,0],data[idx==0,1],'ob',
+     data[idx==1,0],data[idx==1,1],'or',
+     data[idx==2,0],data[idx==2,1],'og') # third cluster points
+plot(centroids[:,0],centroids[:,1],'sm',markersize=8)
+
+#show plot
+title("Element Na Category Zero Kmeans 3")
+show()
+
+# <headingcell level=2>
+
+# Back to layers from cordinates
+
+# <rawcell>
+
+# Layer One
+
+# <codecell>
+
+matrixColCounter = 0
+matrixRowCounter = 0
+
+elementNaMatrixCategoryOne = numpy.random.random((200,200))
+
+numberOfRows = range(0,200)
+rowImOn = 0
+
+for rowNumber in numberOfRows:
+    matrixColCounter = 0
+    rowImOn = elementNaMatrixCategory[rowNumber,:]
+    for col in rowImOn: 
+        if col == 1:
+            elementNaMatrixCategoryOne[rowNumber,matrixColCounter] = col
+        else:
+            col = 0
+            elementNaMatrixCategoryOne[rowNumber,matrixColCounter] = col
+        matrixColCounter += 1
+
+print elementNaMatrixCategoryOne
+
+pcolor(elementNaMatrixCategoryOne)
+colorbar()
+title("Element Na Category One")
+show()
+
+# <rawcell>
+
+# Layer Two
+
+# <codecell>
+
+matrixColCounter = 0
+matrixRowCounter = 0
+
+elementNaMatrixCategoryTwo = numpy.random.random((200,200))
+
+numberOfRows = range(0,200)
+rowImOn = 0
+
+for rowNumber in numberOfRows:
+    matrixColCounter = 0
+    rowImOn = elementNaMatrixCategory[rowNumber,:]
+    for col in rowImOn: 
+        if col == 2:
+            elementNaMatrixCategoryTwo[rowNumber,matrixColCounter] = 2
+        else:
+            elementNaMatrixCategoryTwo[rowNumber,matrixColCounter] = 0
+        matrixColCounter += 1
+
+print elementNaMatrixCategoryTwo
+
+pcolor(elementNaMatrixCategoryTwo)
+title("Element Na Category Two")
+show()
+
+# <rawcell>
+
+# Layer Three
+
+# <codecell>
+
+matrixColCounter = 0
+matrixRowCounter = 0
+
+elementNaMatrixCategoryThree = numpy.random.random((200,200))
+
+numberOfRows = range(0,200)
+rowImOn = 0
+
+for rowNumber in numberOfRows:
+    matrixColCounter = 0
+    rowImOn = elementNaMatrixCategory[rowNumber,:]
+    for col in rowImOn: 
+        if col == 3:
+            elementNaMatrixCategoryThree[rowNumber,matrixColCounter] = 3
+        else:
+            elementNaMatrixCategoryThree[rowNumber,matrixColCounter] = 0
+        matrixColCounter += 1
+
+print elementNaMatrixCategoryThree
+
+pcolor(elementNaMatrixCategoryThree)
+title("Element Na Category Three")
+show()
+
+# <rawcell>
+
+# Layer Four
+
+# <codecell>
+
+matrixColCounter = 0
+matrixRowCounter = 0
+
+elementNaMatrixCategoryFour = numpy.random.random((200,200))
+
+numberOfRows = range(0,200)
+rowImOn = 0
+
+for rowNumber in numberOfRows:
+    matrixColCounter = 0
+    rowImOn = elementNaMatrixCategory[rowNumber,:]
+    for col in rowImOn: 
+        if col == 4:
+            elementNaMatrixCategoryFour[rowNumber,matrixColCounter] = 4
+        else:
+            elementNaMatrixCategoryFour[rowNumber,matrixColCounter] = 0
+        matrixColCounter += 1
+
+print elementNaMatrixCategoryFour
+
+pcolor(elementNaMatrixCategoryFour)
+title("Element Na Category Four")
+show()
+
+# <rawcell>
+
+# Layer Five
+
+# <codecell>
+
+matrixColCounter = 0
+matrixRowCounter = 0
+
+elementNaMatrixCategoryFive = numpy.random.random((200,200))
+
+numberOfRows = range(0,200)
+rowImOn = 0
+
+for rowNumber in numberOfRows:
+    matrixColCounter = 0
+    rowImOn = elementNaMatrixCategory[rowNumber,:]
+    for col in rowImOn: 
+        if col == 5:
+            elementNaMatrixCategoryFive[rowNumber,matrixColCounter] = 3
+        else:
+            elementNaMatrixCategoryFive[rowNumber,matrixColCounter] = 0
+        matrixColCounter += 1
+
+print elementNaMatrixCategoryFive
+
+pcolor(elementNaMatrixCategoryFive)
+title("Element Na Category Five")
+show()
+
+# <rawcell>
+
+# Layer Six
+
+# <codecell>
+
+matrixColCounter = 0
+matrixRowCounter = 0
+
+elementNaMatrixCategorySix = numpy.random.random((200,200))
+
+numberOfRows = range(0,200)
+rowImOn = 0
+
+for rowNumber in numberOfRows:
+    matrixColCounter = 0
+    rowImOn = elementNaMatrixCategory[rowNumber,:]
+    for col in rowImOn: 
+        if col >5:
+            elementNaMatrixCategorySix[rowNumber,matrixColCounter] = 6
+        else:
+            elementNaMatrixCategorySix[rowNumber,matrixColCounter] = 0
+        matrixColCounter += 1
+
+print elementNaMatrixCategorySix
+
+pcolor(elementNaMatrixCategorySix)
+title("Element Na Category Greater then Five")
+show()
+
+# <headingcell level=3>
+
+# rough draft without loops
+
+# <codecell>
+
+matrixColCounter = 0
+matrixRowCounter = 0
+
+elementNaMatrixCategory = numpy.random.random((200,200))
+
+rowOne = elementNaMatrix[0,:]
+rowTwo = elementNaMatrix[1,:]
+
+numberOfRows = range(0,200)
+rowImOn = 0
+
+for rowNumber in numberOfRows:
+    matrixColCounter = 0
+    rowImOn = elementNaMatrix[rowNumber,:]
+    for col in rowImOn:
+        if col in range(0,6):
+            col = 0
+            elementNaMatrixCategory[rowNumber,matrixColCounter] = col
+        elif col>= 6 and col <=10:
+            col = 1
+            elementNaMatrixCategory[rowNumber,matrixColCounter] = col
+        elif col>= 11 and col <=15:
+            col = 2
+            elementNaMatrixCategory[rowNumber,matrixColCounter] = col
+        elif col>= 16 and col <=20:
+            col = 3
+            elementNaMatrixCategory[rowNumber,matrixColCounter] = col
+        elif col>= 21 and col <=25:
+            col = 4
+            elementNaMatrixCategory[rowNumber,matrixColCounter] = col
+        elif col>= 26 and col <=30:
+            col = 5
+            elementNaMatrixCategory[rowNumber,matrixColCounter] = col
+        elif col>= 31 and col <=35:
+            col = 6
+            elementNaMatrixCategory[rowNumber,matrixColCounter] = col
+        elif col>= 36 and col <=40:
+            col = 7
+            elementNaMatrixCategory[rowNumber,matrixColCounter] = col
+        elif col>= 41 and col <=50:
+            col = 8
+            elementNaMatrixCategory[rowNumber,matrixColCounter] = col
+        elif col>= 51 and col <=55:
+            col = 9
+            elementNaMatrixCategory[rowNumber,matrixColCounter] = col
+        else:
+            col = 10
+            elementNaMatrixCategory[rowNumber,matrixColCounter] = col
+        matrixColCounter += 1
+            
+print elementNaMatrix
+print ""
+print ""
+print elementNaMatrixCategory
+
+pcolor(elementNaMatrixCategory)
+colorbar()
+title("Element Na Category")
+show()
+
+print ""
+print ""
+print matrixColCounter
+print matrixRowCounter
+
+# <codecell>
+
+print elementNaMatrix[0:]
+
+# <codecell>
+
+elementNaMatrixCategory[matrixRowCounter,matrixColCounter]
 
 # <headingcell level=1>
 
