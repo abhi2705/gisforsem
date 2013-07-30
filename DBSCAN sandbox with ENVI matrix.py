@@ -634,9 +634,158 @@ colorbar()
 title("Element Na Category")
 show()
 
+# <headingcell level=2>
+
+# Prep the data for Kmeans(), that takes two things 1)Cordinates 2)values
+
 # <headingcell level=3>
 
-# pull out a layer with only one value
+# Kmeans prep 1)Cordinates
+
+# <codecell>
+
+matrixColCounter = 0
+matrixRowCounter = 0
+
+elementNaMatrixKmeansCord = numpy.random.random((200,200))
+
+matrixCounter = 0
+elementNaMatrixKmeansCordArray = [0]*50000
+
+numberOfRows = range(0,200)
+
+for rowNumber in numberOfRows:
+    matrixColCounter = 0
+    rowImOn = elementNaMatrix[rowNumber,:]
+    for col in rowImOn: 
+        arrayIndexNumber = matrixColCounter+rowNumber*200
+        elementNaMatrixKmeansCordArray[arrayIndexNumber] = (matrixColCounter,rowNumber)
+        matrixColCounter += 1
+
+#print elementNaMatrixKmeansCordArray
+elementNaMatrixKmeansCordArray[:] = (value for value in elementNaMatrixKmeansCordArray if value != 0)
+print elementNaMatrixKmeansCordArray
+
+# <headingcell level=3>
+
+# Kmeans prep 2)Values
+
+# <codecell>
+
+matrixColCounter = 0
+matrixRowCounter = 0
+
+#elementNaMatrixKmeansValue = numpy.random.random((200,200))
+
+matrixCounter = 0
+elementNaMatrixKmeansValueArray = [666]*50000
+
+numberOfRows = range(0,200)
+
+for rowNumber in numberOfRows:
+    matrixColCounter = 0
+    rowImOn = elementNaMatrixCategory[rowNumber,:]
+    for col in rowImOn: 
+        arrayIndexNumber = matrixColCounter+rowNumber*200
+        elementNaMatrixKmeansValueArray[arrayIndexNumber] = col
+        matrixColCounter += 1
+
+#print elementNaMatrixKmeansCordArray
+elementNaMatrixKmeansValueArray[:] = (value for value in elementNaMatrixKmeansValueArray if value != 666)
+print elementNaMatrixKmeansValueArray
+
+# <headingcell level=3>
+
+# Use Kmean() on the data
+
+# <codecell>
+
+
+# <headingcell level=2>
+
+# Use DBSCAN on the data
+
+# <codecell>
+
+import numpy as np
+from scipy.spatial import distance
+from sklearn.cluster import DBSCAN
+from sklearn import metrics
+from sklearn.datasets.samples_generator import make_blobs
+
+# <codecell>
+
+print __doc__
+
+##############################################################################
+# Generate sample data
+centers = [[1, 1], [-1, -1], [1, -1]]
+X = elementNaMatrixKmeansCordArray[0:300]
+
+##############################################################################
+# Compute similarities
+D = distance.squareform(distance.pdist(X))
+S = 1 - (D / np.max(D))
+
+##############################################################################
+# Compute DBSCAN
+db = DBSCAN(eps=0.95, min_samples=10).fit(S)
+core_samples = db.core_sample_indices_
+labels = elementNaMatrixKmeansValueArray[0:300]
+
+# Number of clusters in labels, ignoring noise if present.
+n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+
+# <codecell>
+
+print 'Estimated number of clusters: %d' % n_clusters_
+print "Homogeneity: %0.3f" % metrics.homogeneity_score(labels_true, labels)
+print "Completeness: %0.3f" % metrics.completeness_score(labels_true, labels)
+print "V-measure: %0.3f" % metrics.v_measure_score(labels_true, labels)
+print "Adjusted Rand Index: %0.3f" % \
+    metrics.adjusted_rand_score(labels_true, labels)
+print "Adjusted Mutual Information: %0.3f" % \
+    metrics.adjusted_mutual_info_score(labels_true, labels)
+print ("Silhouette Coefficient: %0.3f" %
+       metrics.silhouette_score(D, labels, metric='precomputed'))
+
+# <codecell>
+
+
+##############################################################################
+# Plot result
+import pylab as pl
+from itertools import cycle
+
+pl.close('all')
+pl.figure(1)
+pl.clf()
+
+# Black removed and is used for noise instead.
+colors = cycle('bgrcmybgrcmybgrcmybgrcmy')
+for k, col in zip(set(labels), colors):
+    if k == -1:
+        # Black used for noise.
+        col = 'k'
+        markersize = 6
+    class_members = [index[0] for index in np.argwhere(labels == k)]
+    cluster_core_samples = [index for index in core_samples
+                            if labels[index] == k]
+    for index in class_members:
+        x = X[index]
+        if index in core_samples and k != -1:
+            markersize = 14
+        else:
+            markersize = 6
+        pl.plot(x[0], x[1], 'o', markerfacecolor=col,
+                markeredgecolor='k', markersize=markersize)
+
+pl.title('Estimated number of clusters: %d' % n_clusters_)
+pl.show()
+
+# <headingcell level=1>
+
+# Pull out a layer with only one value
 
 # <rawcell>
 
