@@ -490,9 +490,9 @@ loopCounter = 0
 for word in ElementList:
     for searchWordNumber in searchWordNumberListV2:
         if word == searchWord[searchWordNumber]:
-            print searchWord[searchWordNumber] 
-            print ElementList.index(searchWord[searchWordNumber])
-            print loopCounter
+            #print searchWord[searchWordNumber] 
+            #print ElementList.index(searchWord[searchWordNumber])
+            #print loopCounter
             loopCounter += 1
 
 # <codecell>
@@ -582,78 +582,6 @@ show()
 
 # CONVERT rich quantities to categories
 
-# <codecell>
-
-print elementNaMatrix
-
-# <codecell>
-
-matrixColCounter = 0
-matrixRowCounter = 0
-
-elementNaMatrixCategory = numpy.random.random((201,201))
-
-rowOne = elementNaMatrix[0,:]
-rowTwo = elementNaMatrix[1:]
-
-numberOfRows = range(0,2)
-
-for rowNumber in numberOfRows:
-    matrixColCounter = 0
-    rowImOn = elementNaMatrix[rowNumber,:]
-    for col in rowImOn:
-        print 'this is col index',matrixColCounter
-        print 'this is rowNumber',rowNumber
-        matrixColCounter += 1
-
-# <codecell>
-
-rangeV1 = range(1,10)
-print rangeV1
-
-rangeV2 = range(1,10)*2
-print rangeV2
-
-start = 1
-stop = 10
-rangeV3 = range(start,stop)
-print rangeV3
-
-rangeV4 = range(start*2,stop*2)
-print rangeV4
-
-scalar = 2
-rangeV5 = range(start*scalar,stop*scalar)
-print rangeV5
-
-increment = 5
-rangeV6 = range((start+increment)*scalar,(stop+increment)*scalar)
-print rangeV6
-
-rangeV7 = range((start+increment),(stop+increment))
-print rangeV7
-
-rangeV8 = range((start+increment*scalar),(stop+increment*scalar))
-print rangeV8
-
-low = 0
-high = 4
-increment = 5
-scalarList = (0,1,2,3,4,5)
-for scalar in scalarList:
-    print 'scalar',low+scalar*increment,high+scalar*increment
-
-# <codecell>
-
-low = 0
-high = 10
-intervalWidth = high+1
-scalarList = range(0,27)
-for scalar in scalarList:
-    print 'scalar',low+scalar*intervalWidth,high+scalar*intervalWidth
-    rangeSet = range(low+scalar*intervalWidth+1,high+scalar*intervalWidth+1)
-    print 'range test set',rangeSet
-
 # <rawcell>
 
 # Pull out bands by category range
@@ -688,16 +616,15 @@ print elementNaMatrix
 print ""
 print ""
 print elementNaMatrixCategory
+print ""
+print ""
+print matrixColCounter
+print matrixRowCounter
 
 pcolor(elementNaMatrixCategory)
 colorbar()
 title("Element Na Category")
 show()
-
-print ""
-print ""
-print matrixColCounter
-print matrixRowCounter
 
 # <headingcell level=3>
 
@@ -736,9 +663,17 @@ for rowNumber in numberOfRows:
 
 print elementNaMatrixCategoryZero
 
+#make the graph
 pcolor(elementNaMatrixCategoryZero)
 title("Element Na Category Zero")
+
+#save the graph, has to be saved before the show()
+from pylab import savefig
+savefig("/home/jon/myplot.png")
+
+#show the graph as a pop up
 show()
+
 
 print naMatrixZeroCordArray[1]
 print naMatrixZeroCordArray[190:250]
@@ -746,7 +681,7 @@ print ''
 print ''
 print ''
 naMatrixZeroCordArray[:] = (value for value in naMatrixZeroCordArray if value != 0)
-print naMatrixZeroCordArray
+#print naMatrixZeroCordArray
 
 # <headingcell level=2>
 
@@ -1040,14 +975,6 @@ print ""
 print matrixColCounter
 print matrixRowCounter
 
-# <codecell>
-
-print elementNaMatrix[0:]
-
-# <codecell>
-
-elementNaMatrixCategory[matrixRowCounter,matrixColCounter]
-
 # <headingcell level=1>
 
 # EXPORT NUMPY ARRAY as RASTER
@@ -1179,185 +1106,6 @@ print savedRasterDatasetArray
 
 #Error Message, says only cordinate 0,0 has info. yet says it has 200 cols and 200 rows
 print savedRasterDatasetPixel
-
-# <codecell>
-
-print elementNaMatrix
-
-# <codecell>
-
-print elementNaArray
-
-# <headingcell level=1>
-
-# DBSCAN
-
-# <headingcell level=3>
-
-# Import in the libraries
-
-# <codecell>
-
-import numpy as np
-
-from sklearn.cluster import DBSCAN
-from sklearn import metrics
-from sklearn.datasets.samples_generator import make_blobs
-from sklearn.preprocessing import StandardScaler
-
-# <headingcell level=3>
-
-# Import in the DATA
-
-# <rawcell>
-
-# The sample DATA
-
-# <codecell>
-
-#Generate sample data
-centers = [[1, 1], [-1, -1], [1, -1]]
-
-X, labels_true = make_blobs(n_samples=750, centers=centers, cluster_std=0.4,
-                            random_state=0)
-
-X = StandardScaler().fit_transform(X)
-
-# <rawcell>
-
-# My DATA
-# Problem: Not 2-DIM but 3-DIM 
-# Need to convert 3-DIM to 2-DIM, if value>10 then plot that value
-
-# <codecell>
-
-# Generate sample data
-#X, labels_true = elementCMatrix
-#X = StandardScaler().fit_transform(X)
-X = elementNaMatrix
-#X = StandardScaler().fit_transform(X)
-
-# <rawcell>
-
-# print "the whole x"
-# print X
-
-# <rawcell>
-
-# print "hopefully x coloumn"
-# print X[:,0]
-# XX = X[:,0]
-
-# <rawcell>
-
-# print "hopefully y columns"
-# print X[:,1]
-# XY = X[:,1]
-
-# <headingcell level=3>
-
-# Plot the Blobs
-
-# <codecell>
-
-# Plot result
-import pylab as pl
-
-#t = pl.arange(0.0, 2.0, 0.01)
-#s = pl.sin(2*pl.pi*t)
-
-#x range
-t = XX
-#y range
-s = XY
-
-#make the plot
-pl.scatter(t, s)
-
-#pl.plot(make_blobs[0],make_blobs[1])
-pl.title('The Blobs')
-pl.show()
-
-# <codecell>
-
-labels_true = elementNaMatrix
-
-# <rawcell>
-
-# Compute DBSCAN
-
-# <codecell>
-
-db = DBSCAN(eps=0.3, min_samples=10).fit(X)
-core_samples = db.core_sample_indices_
-labels = db.labels_
-
-# <rawcell>
-
-# Number of clusters in labels, ignoring noise if present.
-
-# <codecell>
-
-n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-
-# <rawcell>
-
-# Print Statement about the Clusters and DATA
-
-# <codecell>
-
-print(__doc__)
-
-print('Estimated number of clusters: %d' % n_clusters_)
-
-print("Homogeneity: %0.3f" % metrics.homogeneity_score(labels_true, labels))
-
-print("Completeness: %0.3f" % metrics.completeness_score(labels_true, labels))
-
-print("V-measure: %0.3f" % metrics.v_measure_score(labels_true, labels))
-
-print("Adjusted Rand Index: %0.3f"
-      % metrics.adjusted_rand_score(labels_true, labels))
-
-print("Adjusted Mutual Information: %0.3f"
-      % metrics.adjusted_mutual_info_score(labels_true, labels))
-
-print("Silhouette Coefficient: %0.3f"
-      % metrics.silhouette_score(X, labels))
-
-# <headingcell level=3>
-
-# Plot the Clusters
-
-# <codecell>
-
-# Plot result
-import pylab as pl
-
-# Black removed and is used for noise instead.
-unique_labels = set(labels)
-colors = pl.cm.Spectral(np.linspace(0, 1, len(unique_labels)))
-
-for k, col in zip(unique_labels, colors):
-    if k == -1:
-        # Black used for noise.
-        col = 'k'
-        markersize = 6
-    class_members = [index[0] for index in np.argwhere(labels == k)]
-    cluster_core_samples = [index for index in core_samples
-                            if labels[index] == k]
-    for index in class_members:
-        x = X[index]
-        if index in core_samples and k != -1:
-            markersize = 14
-        else:
-            markersize = 6
-        pl.plot(x[0], x[1], 'o', markerfacecolor=col,
-                markeredgecolor='k', markersize=markersize)
-
-        
-pl.title('Estimated number of clusters: %d' % n_clusters_)
-pl.show()
 
 # <codecell>
 
